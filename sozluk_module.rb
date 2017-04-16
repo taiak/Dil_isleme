@@ -46,7 +46,7 @@ module Sozluk
     end
     # fiil değilse true döner
     def fiil_degil?
-      !self.end_with?('mak', 'mek')
+      !self.fiil?
     end
     # büyük harfle başlıyarsa true döner
     def start_with_big?
