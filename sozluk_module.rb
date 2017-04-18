@@ -13,15 +13,26 @@ module Sozluk
     end
   end
   class ::String
-
+    # türkçe alfabedeki harfleri bit şekline çevirir
+    # sesli harfleri 0'a sessizleri 1'e çevir
+    def to_bit
+      sesli = /[aeıioöûuüAEIİOÖUÜ]/
+      sessiz = /[bcçdfgğhjklmnprsştvyzBCÇDEFGHJKLMNPRSŞTVYZ]/
+      self.gsub(/['-]/, '').gsub(sesli, '0').gsub(sessiz, '1')
+    end
+    def to_bit!
+      sesli = /[aeıioöuûüAEIİOÖUÜ]/
+      sessiz = /[bcçdfgğhjklmnprsştvyzBCÇDEFGHJKLMNPRSŞTVYZ]/
+      # ! veya - olanları sil
+      self.gsub!(/['-]/, '')
+      self.gsub!(sesli, '0')
+      self.gsub!(sessiz, '1') 
+    end
     # verilen parametreye göre karşılaştırma yapar.
     def size?(size, comp_op = :==)
-
     	# string olarak girilmiş değerleri sembole çevirir
     	comp_op = comp_op.to_sym if comp_op.class == String
-
 			stat = nil
-
       case comp_op
       when :==
         stat = self if self.size == size
@@ -41,12 +52,12 @@ module Sozluk
       self.size < up_limit and self.size > low_limit
     end
     # fiilse true döner
-    def fiil?
+    def verb?
       self.end_with?('mak', 'mek')
     end
     # fiil değilse true döner
-    def fiil_degil?
-      !self.fiil?
+    def not_verb?
+      !(self.verb?)
     end
     # büyük harfle başlıyarsa true döner
     def start_with_big?
@@ -58,7 +69,22 @@ module Sozluk
     end
   end
   class ::Array
-    # prefix ile başlayan kelime veya kelimeleri seç    
+    # kelimeleri bit şeklinde 0 ve 1'e çevirir
+    def to_bit
+      self.collect { |word| word.to_bit }
+    end
+    def to_bit!
+      self.collect! { |word| word.to_bit! }
+    end
+    # wordy kelimesini içeren kelimeleri seçer 
+    def search(wordy)
+      self.select { |word| word.include? wordy}
+    end
+    # wordy kelimesini içermeyen kelimeleri seçer
+    def search_not(wordy)
+      self.select { |word| !word.include? wordy}
+    end
+    # prefix'le başlayan kelimeleri seçer
     def start_with? (*prefix)
     	self.select { |word| word.start_with?(*prefix) }
     end
@@ -75,12 +101,12 @@ module Sozluk
       self.select { |word| word.index(' ') }   	
     end
     # fiil kelimeleri seç
-    def is_verb?
-    	self.select { |word| word.fiil? }
+    def verb?
+    	self.select { |word| word.verb? }
     end
     # fiil olmayan kelimeleri seç
     def not_verb?
-    	self.select { |word| word.fiil_degil? }
+    	self.select { |word| word.not_verb? }
     end
     # büyük harfle başlayan kelimeleri seç
     def start_big?
@@ -102,6 +128,14 @@ module Sozluk
     # boyutu size? koşullarına uymayan sonuçları getir
     def not_size? (size, comp_op = :==)
     	self.select { |word| !word.size?(size, comp_op) }
+    end
+    # nil veya false olan kelimeleri seçer
+    def not?
+      self.select { |word| !word }
+    end
+    # nil veya false olmayan kelimeleri seçer
+    def is?
+      self.select { |word| word }
     end
   end
 end
