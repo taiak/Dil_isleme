@@ -76,6 +76,13 @@ module Sozluk
     def to_bit!
       self.collect! { |word| word.to_bit! }
     end
+    # kelimelerin başındaki ve sonundaki boşlukları siler
+    def unspace!
+      self.collect! { |word| word.strip }
+    end
+    def unspace
+      self.collect { |word| word.strip }
+    end
     # wordy kelimesini içeren kelimeleri seçer 
     def search(wordy)
       self.select { |word| word.include? wordy}
