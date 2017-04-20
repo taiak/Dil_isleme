@@ -13,20 +13,33 @@ module Sozluk
     end
   end
   class ::String
+    private
+    VOWELS =  /[aâeıîioöuûüAÂEIİÎOÖUÜÛ]/.freeze
+    CONSONANT = /[bcçdfgğhjklmnprsştvyzBCÇDEFGHJKLMNPRSŞTVYZ]/.freeze
+    BIG_CHARS =   "AÂBCÇDEFGĞHIÎİJKLMNOÖPQRSŞTUÛÜVWYZ".freeze
+    SMALL_CHARS = "aâbcçdefgğhıîijklmnoöpqrsştuûüvwyz".freeze
+
+    public
+    # sesli mi diye bakar.
+    def vowel?(n = 0)
+      return false unless self[n] # nil veya false olma ihtimaline karşı
+      (VOWELS =~ self[n])?true:false
+    end
+    # sessiz mi diye bakar. var sayılan 0.indis
+    def consonant?(n = 0)
+      return false unless self[n] # nil veya false olma ihtimaline karşı
+      (CONSONANT =~ self[n])?true:false
+    end
     # türkçe alfabedeki harfleri bit şekline çevirir
     # sesli harfleri 0'a sessizleri 1'e çevir
     def to_bit
-      sesli = /[aeıioöûuüAEIİOÖUÜ]/
-      sessiz = /[bcçdfgğhjklmnprsştvyzBCÇDEFGHJKLMNPRSŞTVYZ]/
-      self.gsub(/['-]/, '').gsub(sesli, '0').gsub(sessiz, '1')
+      self.gsub(/['-]/, '').gsub(VOWELS, '0').gsub(CONSONANT, '1')
     end
     def to_bit!
-      sesli = /[aeıioöuûüAEIİOÖUÜ]/
-      sessiz = /[bcçdfgğhjklmnprsştvyzBCÇDEFGHJKLMNPRSŞTVYZ]/
       # ! veya - olanları sil
       self.gsub!(/['-]/, '')
-      self.gsub!(sesli, '0')
-      self.gsub!(sessiz, '1') 
+      self.gsub!(VOWELS, '0')
+      self.gsub!(CONSONANT, '1') 
     end
     # verilen parametreye göre karşılaştırma yapar.
     def size?(size, comp_op = :==)
@@ -67,8 +80,48 @@ module Sozluk
     def start_with_small?
     	(/[abcçdefgğhıijklmnoöprsştuüvyz]/ =~ self[0])?true:false 
     end
+    # türkçe kurallara göre hecelemeyi sağlar
+    def spell
+      heceli = self.downcase
+      sinir = self.size
+      i = 1
+      while i < sinir
+        if vowel?(-i)
+          if vowel?(-(i+1))
+            heceli.insert( sinir-i, "-")
+          else
+            i += 1
+            if ( sinir-i > 2 ) || vowel?(-(i+1)) 
+              heceli.insert( sinir-i, "-")
+            elsif vowel? # ilk harf sesliyse
+              heceli.insert( 2, "-") 
+            end
+          end
+        end
+        i += 1
+      end
+      return heceli
+    end
+    def spell!
+      self.replace( self.spell )
+    end
   end
   class ::Array
+    # verilen patternle başlayan kelimeleri döner
+    def start_pattern?(pattern)
+      self.select { |word| word.to_bit.start_with?(pattern) }
+    end
+    # verilen patterni kelimelerde arar ve geçerli kelimeleri döner
+    def pattern?(pattern)
+      self.select { |word| word.to_bit.index(pattern) }
+    end
+    # verilen dizideki elemanları türkçeye göre heceler
+    def spell
+      self.collect { |word| word.spell }
+    end
+    def spell!
+      self.collect! { |word| word.spell }
+    end
     # kelimeleri bit şeklinde 0 ve 1'e çevirir
     def to_bit
       self.collect { |word| word.to_bit }
@@ -137,12 +190,33 @@ module Sozluk
     	self.select { |word| !word.size?(size, comp_op) }
     end
     # nil veya false olan kelimeleri seçer
-    def not?
+    def not_true?
       self.select { |word| !word }
     end
     # nil veya false olmayan kelimeleri seçer
-    def is?
+    def is_true?
       self.select { |word| word }
     end
   end
 end
+
+# türkçe kelimelerin sıralanması için düzenlenecek
+# module SortTurkish
+#   class ::Array
+#     attr_reader :CHARS
+#     CHARS = "0123456789AÂBCÇDEFGĞHIÎİJKLMNOÖPQRSŞTUÛÜVWYZ
+#               aâbcçdefgğhıîijklmnoöpqrsştuûüvwyz".freeze
+#     def sırala
+#       sort_by do |item|
+#         if item.is_a?(String)
+#           item.chars.map { |ch| CHARS.index(ch) }
+#         else
+#           super
+#         end
+#       end
+#     end
+#     def sırala!
+#       replace(sırala)
+#     end
+#   end
+# end
