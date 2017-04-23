@@ -48,7 +48,7 @@ module DS
     def size?(size, comp_op = :==)
       # string olarak girilmiş değerleri sembole çevirir
       comp_op = comp_op.to_sym if comp_op.class == String
-      stat = false
+      stat = nil # karşılaştırma koşullarına uymama durumu
       case comp_op
       when :==
         stat = self if self.size == size
