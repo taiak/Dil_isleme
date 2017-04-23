@@ -2,17 +2,18 @@ module Sozluk
   class ::String
     private
     VOWELS =  /[aâeıîioöuûüAÂEIİÎOÖUÜÛ]/.freeze
-    VOWELS_STR = "aâeıîioöuûüAÂEIİÎOÖUÜÛ".freeze
     CONSONANT = /[bcçdfgğhjklmnprsştvyzBCÇDEFGHJKLMNPRSŞTVYZ]/.freeze
-    CONSONANT_STR = "bcçdfgğhjklmnprsştvyzBCÇDEFGHJKLMNPRSŞTVYZ".freeze
-    BIG_CHARS =   /[AÂBCÇDEFGĞHIÎİJKLMNOÖPQRSŞTUÛÜVWYZ]/.freeze
-    SMALL_CHARS = /[aâbcçdefgğhıîijklmnoöpqrsştuûüvwyz]/.freeze
-    CHARS = "AÂBCÇDEFGĞHIÎİJKLMNOÖPQRSŞTUÛÜVWYZaâbcçdefgğhıîijklmnoöpqrsştuûüvwyz".freeze
-    public
+    # VOWELS_STR = "aâeıîioöuûüAÂEIİÎOÖUÜÛ".freeze
+    # CONSONANT_STR = "bcçdfgğhjklmnprsştvyzBCÇDEFGHJKLMNPRSŞTVYZ".freeze
+    #BIG_CHARS =   /[AÂBCÇDEFGĞHIÎİJKLMNOÖPQRSŞTUÛÜVWYZ]/.freeze
+    #SMALL_CHARS = /[aâbcçdefgğhıîijklmnoöpqrsştuûüvwyz]/.freeze
+    #CHARS = "AÂBCÇDEFGĞHIÎİJKLMNOÖPQRSŞTUÛÜVWYZaâbcçdefgğhıîijklmnoöpqrsştuûüvwyz".freeze
+
     # sonu mak veya mekle bitiyorsa true döner
     def verb?
       self.end_with?('mak', 'mek')
     end
+    public
     # sesli mi diye bakar.
     def vowel?(n = 0)
       return false unless self[n] # nil veya false olma ihtimaline karşı
@@ -62,16 +63,8 @@ module Sozluk
       return stat
     end
     # string boyutlarına göre true veya false döner
-    def size_limit? (low_limit, up_limit)
+    def limit? (low_limit, up_limit)
       self.size < up_limit and self.size > low_limit
-    end
-    # büyük harfle başlıyarsa true döner
-    def start_with_big?
-       (BIG_CHARS =~ self[0])?true:false
-    end
-    # küçük harfle başlıyorsa true döner
-    def start_with_small?
-      (SMALL_CHARS =~ self[0])?true:false 
     end
     # türkçe kurallara göre hecelemeyi sağlar
     def spell
@@ -124,13 +117,6 @@ module Sozluk
     def spell_split(bracket = '-')
       return self.map { |word| word.spell.split(bracket) }.flatten
     end
-    # herbir elemanı sembole çevirir
-    def each_to_sym
-      self.dump.each_to_sym!
-    end
-    def each_to_sym!
-      self.collect! { |word| word.to_sym }
-    end
     # herbir stringin tekrar sayısını verir. her eleman [isim, sayi] şeklinde döner
     def syll_count
       self.spell_split.rep_count
@@ -158,22 +144,6 @@ module Sozluk
     def spell!
       self.collect! { |word| word.spell }
     end
-    # FIXME: Türkçeye uyarla
-    # upcase işlemini sağlar
-    def upcase
-      self.dup.upcase!
-    end
-    def upcase!
-      self.collect! { |word| word.upcase }
-    end
-    # FIXME: Türkçeye uyarla
-    # downcase işlemini sağlar
-    def downcase
-      self.dup.downcase!
-    end
-    def downcase!
-      self.collect! { |word| word.downcase }
-    end
     # kelimeleri bit şeklinde 0 ve 1'e çevirir
     def to_bit
       self.dup.to_bit!
@@ -185,20 +155,6 @@ module Sozluk
     def class?(clss)
       self.select { |word| word.class == clss }
     end
-    # kelimelerin başındaki ve sonundaki boşlukları siler
-    def strip
-      self.dup.strip!
-    end
-    def strip!
-      self.collect! { |word| word.strip }
-    end
-    # verilen dizideki boşlukları siler 
-    def unspace
-      self.dup.unspace!
-    end
-    def unspace!
-      self.collect! { |word| (word.index ' ')? word.gsub(' ',''): word }
-    end    
     # wordy kelimesini içeren kelimeleri seçer 
     def search?(wordy)
       self.select { |word| word.include? wordy}
@@ -227,42 +183,18 @@ module Sozluk
     def verb?
       self.select { |word| word.verb? }.collect { |word| word[0...-3] }
     end
-    # büyük harfle başlayan kelimeleri seç
-    def start_big?
-      self.select { |word| word.start_with_big? }
-    end
-    # küçük harfle başlayan kelimeleri seç
-    def start_small?
-      self.select { |word| word.start_with_small? }
-    end
     # boyutu size'a göre, verilen işaretle işleme sok ve koşula uyanları seç
     # ön tanımlı işlem parametre verilmezse == işlemi öntanımlı
     def size? (size, comp_op = :==)
       self.select { |word| word.size?(size, comp_op) }
     end
-    # uzunluğu low_limit ve up_limit arasında olan kelimeleri seç
-    def limit? (low_limit, up_limit)
-      self.select { |word| word.size_limit?(low_limit, up_limit) }
-    end
     # boyutu size? koşullarına uymayan sonuçları getir
     def not_size? (size, comp_op = :==)
       self.select { |word| !word.size?(size, comp_op) }
     end
-    # nil veya false olan kelimeleri seçer
-    def not?
-      self.select { |word| !word }
-    end
-    # nil veya false olmayan kelimeleri seçer
-    def is_true?
-      self.select { |word| word }
-    end
-    # false olan değerleri döner
-    def is_false?
-      self.select { |word| word == false }
-    end
-    # nil olan değerleri döner
-    def is_nil?
-      self.select { |word| word == nil }
+    # uzunluğu low_limit ve up_limit arasında olan kelimeleri seç
+    def limit? (low_limit, up_limit)
+      self.select { |word| word.limit?(low_limit, up_limit) }
     end
   end
 end
