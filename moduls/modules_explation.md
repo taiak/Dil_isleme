@@ -309,6 +309,13 @@ Verilen ölçüt ve kontrol seçeneğine uyanmayan elemanları seçer.
 #### limit? (low_limit, up_limit)
 
 low_limit ve up_limit uzunlukları arasında uzunluğu olan stringleri seçer.
+Alt limit ve üst limit bu kategoriye dahil değildir.
+
+~~~ruby
+    dizi = ["Between", "flowersandsills", "thecats", "will", "know"]
+    print dizi.limit?(3, 8)
+    #=> ["Between", "thecats", "will", "know"]
+~~~
 
 #### unspace
 
@@ -348,4 +355,93 @@ nil veya false olmayan değerleri döner.
     dizi = [nil, false, "cats", "will", "know", false, true, "it"]
     print dizi.not?
     #=> ["cats", "will", "know", true, "it"]
+~~~
+
+## Dictionary Searcher Tools(DST)
+
+Dictionary Searcher Modülüne yardımcı olarak eklenmiş modüldür.
+Fakat bunların doğrudan diğer modülde bulunması saçma geldiğinden
+bunlar için ayrı bir modül oluşturma ihtiyacı duydum.
+Bazı metotlara(upcase, downcase vb.) türkçe desteğinin gelmesi
+gerekiyor.
+
+### String Metotları
+
+#### start_with_big?
+ 
+Eğer verilen string büyük harfle başlıyorsa true döner.
+Türkçe harfler için desteği var.
+
+~~~ruby
+    p "Çayır".start_with_big?  #=> true
+~~~
+
+#### start_with_small?
+
+Eğer verilen string küçük harfle başlıyorsa true döner.
+Türkçe harfler için desteği var.
+
+~~~ruby
+    p "Github".start_with_small? #=> false
+    p "deneme".start_with_small? #=> true
+~~~
+
+### Dizi Metotları
+
+#### upcase
+
+Verilen dizideki bütün harfleri büyük harfe çevirir. Henüz türkçe desteği yok.
+
+#### downcase
+
+Verilen dizideki bütün harfleri küçük harfe çevirir. Henüz türkçe desteği yok.
+
+#### is_false?
+
+Verilen dizideki false elemanları seçer.
+
+~~~ruby
+    dizi = ["her", 1, "3", nil, false]
+    print dizi.is_false?
+    #=> [false]
+~~~
+
+#### is_nil?
+
+Verilen dizideki nil elemanları seçer.
+
+~~~ruby
+    dizi = ["her", 1, "3", nil, false]
+    print dizi.is_nil?
+    #=> [nil]
+~~~
+
+#### start_big?
+
+Verilen dizideki türkçe ve büyük harfle başlayan elemanları seçer.
+
+~~~ruby
+    dizi = %w(Çayır çimene Kuzular yayılır)
+    print dizi.start_big?
+    #=> ["Çayır", "Kuzular"]
+~~~
+
+#### start_small?
+
+Verilen dizideki türkçe ve küçük harfle başlayan elemanları seçer.
+
+~~~ruby
+    dizi = %w(Çayır çimene Kuzular yayılır)
+    print dizi.start_big?
+    #=> ["çimene", "yayılır"]
+~~~
+
+#### each_to_sym
+
+Verilen dizinin elemanlarını sembole çevirir.
+
+~~~ruby
+    dizi = %w(Çayır çimene Kuzu yayılır)
+    print dizi.each_to_sym
+    #=> [:Çayır, :çimene, :Kuzu, :yayılır]
 ~~~
