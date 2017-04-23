@@ -51,15 +51,15 @@ module DS
       stat = nil # karşılaştırma koşullarına uymama durumu
       case comp_op
       when :==
-        stat = self if self.size == size
+        stat = (self.size == size)
       when :>
-        stat = self if self.size > size
+        stat = (self.size > size)
       when :<
-        stat = self if self.size < size
+        stat = (self.size < size)
       when :>=
-        stat = self if self.size >= size
+        stat = (self.size >= size)
       when :<=
-        stat = self if self.size <= size
+        stat = (self.size <= size)
       end
       return stat
     end
