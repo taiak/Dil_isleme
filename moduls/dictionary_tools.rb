@@ -1,4 +1,5 @@
-module DictionaryTools
+# DictionarySearcherTools
+module DST
   class ::String
     BIG_CHARS =   /[AÂBCÇDEFGĞHIÎİJKLMNOÖPQRSŞTUÛÜVWYZ]/.freeze
     SMALL_CHARS = /[aâbcçdefgğhıîijklmnoöpqrsştuûüvwyz]/.freeze
