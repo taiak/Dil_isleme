@@ -15,20 +15,6 @@ module DST
   end
   class ::Array
     # kelimelerin başındaki ve sonundaki boşlukları siler
-    def strip
-      self.dup.strip!
-    end
-    def strip!
-      self.collect! { |word| word.strip }
-    end
-    # nil veya false olan kelimeleri seçer
-    def not?
-      self.select { |word| !word }
-    end
-    # nil veya false olmayan kelimeleri seçer
-    def is_true?
-      self.select { |word| word }
-    end
     # false olan değerleri döner
     def is_false?
       self.select { |word| word == false }
