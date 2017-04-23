@@ -27,7 +27,7 @@ module DS
     end
     # kontrol işlemi gerçekleştirerek gsub'ın daha hızlı gerçekleşmesini sağlar
     def fast_gsub(exp, change)
-      self.dup.fast_gsub!
+      self.dup.fast_gsub!(exp, change)
     end
     def fast_gsub!(exp, change)
       (self.index exp) ? self.gsub!(exp,change) : self
