@@ -49,7 +49,7 @@ module DST
     end
     # herbir elemanı sembole çevirir
     def each_to_sym
-      self.dump.each_to_sym!
+      self.dup.each_to_sym!
     end
     def each_to_sym!
       self.collect! { |word| word.to_sym }
