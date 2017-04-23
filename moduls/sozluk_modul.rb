@@ -102,7 +102,7 @@ module Sozluk
   class ::Array
     protected
     # [[symbole, number],[symbole, number]] şeklindeki diziden sembolleri seçer
-    def catch_class(clss = Symbol)
+    def catch_class(clss)
       self.flatten.class? clss
     end
     public
@@ -122,25 +122,26 @@ module Sozluk
     end
     # dizideki stringleri heceler ve heceleri döner. uniq değildir 
     def spell_split(bracket = '-')
-      return self.map { |word| word.spell.split(bracket).each_to_sym }.flatten
+      return self.map { |word| word.spell.split(bracket) }.flatten
     end
     # herbir elemanı sembole çevirir
     def each_to_sym
       self.dump.each_to_sym!
     end
-    def each_to_sym
+    def each_to_sym!
       self.collect! { |word| word.to_sym }
     end
-    # herbir stringin tekrar sayısını verir. her eleman [symbol, number] şeklinde döner
-    def syll_with_count
+    # herbir stringin tekrar sayısını verir. her eleman [isim, sayi] şeklinde döner
+    def syll_count
+      self.spell_split.rep_count
+    end
+    # verilen dizideki elemanları sayar ve [adı, sayısı] şeklinde uniq bir liste verir
+    def rep_count
       self.each_with_object(Hash.new(0)){ |key,hash| hash[key] += 1 }.sort {|sym, rep| rep[1].to_i <=> sym[1].to_i }
     end
     # heceleri(syllables) verir. sembol olarak dönüş yapar
     def syll
-      self.spell_split.syll_with_count.catch_class
-    end
-    def syll_to_s
-      self.syll.to_str
+      self.syll_count.catch_class(String)
     end
     # verilen patternle başlayan kelimeleri döner
     def start_pattern?(pattern)
