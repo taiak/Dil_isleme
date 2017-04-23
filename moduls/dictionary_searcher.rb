@@ -21,7 +21,7 @@ module DS
       (VOWELS =~ self[n])?true:false
     end
     # sessiz mi diye bakar. var sayılan 0.indis
-    def consonant?(n = 0)
+    def const?(n = 0)
       return false unless self[n] # nil veya false olma ihtimaline karşı
       (CONSONANT =~ self[n])?true:false
     end
