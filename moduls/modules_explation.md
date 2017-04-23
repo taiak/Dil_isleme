@@ -76,7 +76,7 @@ Sonuç dizisi her hecenin ayrılmış halidir. Uniq değildir.
 
 #### syll_count
 
-# herbir stringin tekrar sayısını verir. Her eleman [kelime, sayısı] şeklinde döner.
+Herbir stringin tekrar sayısını verir. Her eleman [kelime, sayısı] şeklinde döner.
 
 #### rep_count
 
@@ -145,3 +145,19 @@ Verilen ölçüt ve kontrol seçeneğine uyanmayan elemanları seçer.
 #### limit? (low_limit, up_limit)
 
 low_limit ve up_limit uzunlukları arasında uzunluğu olan stringleri seçer.
+
+#### unspace
+
+Verilen dizideki herbir elemanın içerisindeki boşlukları siler.
+
+#### strip
+
+Her kelimenin başındaki ve sonundaki boşlukları siler.
+
+#### not?
+
+nil veya false olan elemanları döner.
+
+#### is_true?
+
+nil veya false ollmayan değerleri döner.
