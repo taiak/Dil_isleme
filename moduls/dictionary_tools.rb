@@ -54,12 +54,5 @@ module DST
     def each_to_sym!
       self.collect! { |word| word.to_sym }
     end
-    # verilen dizideki boşlukları siler 
-    def unspace
-      self.dup.unspace!
-    end
-    def unspace!
-      self.collect! { |word| (word.index ' ')? word.gsub(' ',''): word }
-    end
   end
 end
