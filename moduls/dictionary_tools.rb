@@ -16,11 +16,11 @@ module DST
   class ::Array
     # kelimelerin başındaki ve sonundaki boşlukları siler
     # false olan değerleri döner
-    def is_false?
+    def false?
       self.select { |word| word == false }
     end
     # nil olan değerleri döner
-    def is_nil?
+    def nil?
       self.select { |word| word == nil }
     end
     # FIXME: Türkçeye uyarla
