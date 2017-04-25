@@ -347,13 +347,13 @@ nil veya false olan elemanları döner.
     #=> [nil, false, false]
 ~~~
 
-#### is_true?
+#### true?
 
 nil veya false olmayan değerleri döner.
 
 ~~~ruby
     dizi = [nil, false, "cats", "will", "know", false, true, "it"]
-    print dizi.not?
+    print dizi.true?
     #=> ["cats", "will", "know", true, "it"]
 ~~~
 
@@ -396,23 +396,23 @@ Verilen dizideki bütün harfleri büyük harfe çevirir. Henüz türkçe deste�
 
 Verilen dizideki bütün harfleri küçük harfe çevirir. Henüz türkçe desteği yok.
 
-#### is_false?
+#### false?
 
 Verilen dizideki false elemanları seçer.
 
 ~~~ruby
     dizi = ["her", 1, "3", nil, false]
-    print dizi.is_false?
+    print dizi.false?
     #=> [false]
 ~~~
 
-#### is_nil?
+#### nil?
 
 Verilen dizideki nil elemanları seçer.
 
 ~~~ruby
     dizi = ["her", 1, "3", nil, false]
-    print dizi.is_nil?
+    print dizi.nil?
     #=> [nil]
 ~~~
 
