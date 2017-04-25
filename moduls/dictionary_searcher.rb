@@ -216,7 +216,7 @@ module DS
       self.select { |word| !word }
     end
     # nil veya false olmayan kelimeleri seçer
-    def is_true?
+    def true?
       self.select { |word| word }
     end
   end
