@@ -48,6 +48,10 @@ Verilen stringin n. elemanının sessiz harf olup olmadığını kontrol eder.
    "example".const?(1) #=> true  
 ~~~
 
+#### gsub_all(new, *old)
+
+Verilen elemanları(old), yeni ifadeyle (new) değiştirir.
+
 #### fast_gsub(exp, change)
 
 String exp ifadesini içeriyorsa gsub işlemini gerçekleştirir. gsub'dan farkı eğer ifade
@@ -57,15 +61,13 @@ exp ifadesini içermiyorsa gsuba girmediğinden işlemin daha hızlı çalışma
   "deneme".fast_gsub("e","i") #=> "dinimi"
 ~~~
 
-#### to_bit(vow = 1, *uninvented)
+#### to_bit(vow = 0)
 
 Sesli harfleri 0, sessiz harfleri 1 yapar.
-Sesliler varsayılan olarak 0 dir ve istisna tutulacak
-karakterlerin girilmesi gerekilmektedir. İstisna tutulacak karakterler
-dizi şeklinde girilmelidir.
+Sesliler varsayılan olarak 0 dir 
 
 ~~~ruby
-  "de'n-e'me".to_bit(1, "'", "-")  #=> "101010"
+  "deneme".to_bit(1)  #=> "101010"
 ~~~
 #### size?(size, comp_op = :==)
 
@@ -208,17 +210,21 @@ Bütün kelimeleri heceler.
     #=> ["ka-ra", "dağ-lar", "kar", "al-tın-da", "ka-lan-da"]
 ~~~
 
-#### to_bit(vow = 0, *uninvented)
+#### to_bit(vow = 0)
 
-Önce istisnaları temizler sonra
 bütün kelimeler için sesli harfleri vow, sessiz harfleri 1-vow yapar.
 
 ~~~ruby
-    dizi = %w(kara dağ'lar kar altında kalanda)
-    print dizi.to_bit(0, "'")
+    dizi = %w(kara dağlar kar altında kalanda)
+    print dizi.to_bit(0
     print dizi.to_bit
     #=> ["1010", "101101", "101", "0110110", "1010110"]
 ~~~
+
+#### gsub_all(new, *old)
+
+Verilen elemanların(old) herbirini yeni ifadeyle (new) değiştirir.
+
 
 #### class?(clss)
 
