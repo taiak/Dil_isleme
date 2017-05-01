@@ -168,11 +168,11 @@ module DS
       self.collect! { |word| word.spell }
     end
     # kelimeleri bit şeklinde 0 ve 1'e çevirir
-    def to_bit
-      self.dup.to_bit!
+    def to_bit(vow = 1, *uninvented)
+      self.dup.to_bit!(vow = 1, *uninvented)
     end
-    def to_bit!
-      self.collect! { |word| word.to_bit! }
+    def to_bit!(vow = 1, *uninvented)
+      self.collect! { |word| word.to_bit!(vow = 1, *uninvented) }
     end
     # verilen dizinin içindeki 0 ve 1 lerin toplamını comp_op'a göre
     # karşılaştırır
