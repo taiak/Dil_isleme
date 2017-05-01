@@ -32,15 +32,21 @@ module DS
     def fast_gsub!(exp, change)
       (self.index exp) ? self.gsub!(exp,change) : self
     end
+    # verilen ifadeleri yenisiyle değiştirir
+    def gsub_all!(new, *old)
+      old.each { |exp| fast_gsub!(/#{exp}/, "#{new}") }
+    end
+    def gsub_all(new, *old)
+      self.dup.gsub_all!(new, *old)
+    end
     # türkçe alfabedeki harfleri bit şekline çevirir
     # sesli harfleri 0'a sessizleri 1'e çevir
     # seslilerin varsayılanı 0 dır ve istisna tutulacak
     # karakterlerin girilmesi gerekilmektedir
-    def to_bit(vow = 0, *uninvented)
-      self.dup.to_bit!(vow, *uninvented)
+    def to_bit(vow = 0)
+      self.dup.to_bit!(vow)
     end
-    def to_bit!(vow = 0, *uninvented)
-      uninvented.each { |exp| fast_gsub!(/#{exp}/, '') }
+    def to_bit!( vow = 0 )
       self.fast_gsub!(VOWELS, vow.to_s)
       self.fast_gsub!(CONSONANT, (1-(vow.to_i)).to_s)
     end
@@ -136,6 +142,13 @@ module DS
     def gsub(before, after)
       self.dup.gsub!(before, after)
     end
+    # verilen eski harf vey kelimeleri yenisiyle değiştirir
+    def gsub_all!(new, *old)
+      self.collect! { |element| element.gsub_all!(new, *old) }
+    end
+    def gsub_all(new, *old)
+      self.dup.gsub_all!(new, *old)
+    end
     # dizideki stringleri heceler ve heceleri döner. uniq değildir 
     def spell_split(bracket = '-')
       return self.map { |word| word.spell.split(bracket) }.flatten
@@ -168,11 +181,11 @@ module DS
       self.collect! { |word| word.spell }
     end
     # kelimeleri bit şeklinde 0 ve 1'e çevirir
-    def to_bit(vow = 1, *uninvented)
-      self.dup.to_bit!(vow = 1, *uninvented)
+    def to_bit(vow = 0)
+      self.dup.to_bit!(vow)
     end
-    def to_bit!(vow = 1, *uninvented)
-      self.collect! { |word| word.to_bit!(vow = 1, *uninvented) }
+    def to_bit!(vow = 0)
+      self.collect! { |word| word.to_bit!(vow) }
     end
     # verilen dizinin içindeki 0 ve 1 lerin toplamını comp_op'a göre
     # karşılaştırır
