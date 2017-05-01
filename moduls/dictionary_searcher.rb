@@ -34,15 +34,15 @@ module DS
     end
     # türkçe alfabedeki harfleri bit şekline çevirir
     # sesli harfleri 0'a sessizleri 1'e çevir
-    def to_bit
-      self.fast_gsub(/['-]/, '').fast_gsub(VOWELS, '0').fast_gsub(CONSONANT, '1')
+    # seslilerin varsayılanı 0 dır ve istisna tutulacak
+    # karakterlerin girilmesi gerekilmektedir
+    def to_bit(vow = 0, *uninvented)
+      self.dup.to_bit!(vow, *uninvented)
     end
-    def to_bit!
-      # ! veya - olanları sil
-      self.gsub!(/['-]/, '') if (self.index "'" or self.index "-")
-      # VOWELS ve CONSONANT'ı kontrol ettirmek performans problemlerine sebep olmakta
-      self.gsub!(VOWELS, '0')
-      self.gsub!(CONSONANT, '1')
+    def to_bit!(vow = 0, *uninvented)
+      uninvented.each { |exp| fast_gsub!(/#{exp}/, '') }
+      self.fast_gsub!(VOWELS, vow.to_s)
+      self.fast_gsub!(CONSONANT, (1-(vow.to_i)).to_s)
     end
     # verilen parametreye göre karşılaştırma yapar.
     def size?(size, comp_op = :==)
@@ -63,6 +63,28 @@ module DS
       end
       return stat
     end
+    # verilen stringdeki bit koşullarına uyan elemanları (0 ve 1)
+    # comp_op a göre karşılaştırır. varsayılan `==` 'dir
+    def bit_size?(size, comp_op = :==)
+      # string olarak girilmiş değerleri sembole çevirir
+      comp_op = comp_op.to_sym if comp_op.class == String
+      # toplam bit içeriğini bul
+      bit_count = self.count('0') + self.count('1')
+      stat = nil # karşılaştırma koşullarına uymama durumu
+      case comp_op
+      when :==
+        stat = (bit_count == size)
+      when :>
+        stat = (bit_count > size)
+      when :<
+        stat = (bit_count < size)
+      when :>=
+        stat = (bit_count >= size)
+      when :<=
+        stat = (bit_count <= size)
+      end
+      return stat
+    end
     # string boyutlarına göre true veya false döner
     def limit? (low_limit, up_limit)
       self.size < up_limit and self.size > low_limit
@@ -75,13 +97,13 @@ module DS
       while i < sinir
         if vowel?(-i)
           if vowel?(-(i+1))
-            heceli.insert( sinir-i, "-")
+            heceli.insert(sinir-i, "-")
           else
             i += 1
-            if ( sinir-i > 2 ) || vowel?(-(i+1)) 
-              heceli.insert( sinir-i, "-")
+            if (sinir-i > 2) || vowel?(-(i+1)) 
+              heceli.insert(sinir-i, "-")
             elsif vowel? # ilk harf sesliyse
-              heceli.insert( 2, "-") 
+              heceli.insert(2, "-") 
             end
           end
         end
@@ -152,6 +174,11 @@ module DS
     def to_bit!
       self.collect! { |word| word.to_bit! }
     end
+    # verilen dizinin içindeki 0 ve 1 lerin toplamını comp_op'a göre
+    # karşılaştırır
+    def bit_size?(size, comp_op = :==)
+      self.select { |word| word.bit_size?(size, comp_op) }
+    end
     # verilen sınıftaki nesneleri döner
     def class?(clss)
       self.select { |word| word.class == clss }
@@ -202,7 +229,7 @@ module DS
       self.dup.unspace!
     end
     def unspace!
-      self.collect! { |word| (word.index ' ')? word.gsub(' ',''): word }
+      self.collect! { |word| (word.index ' ')? word.gsub(' ', ''): word }
     end
     # kelimelerin başındaki ve sonundaki boşlukları siler
     def strip
