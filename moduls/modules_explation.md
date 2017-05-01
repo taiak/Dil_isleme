@@ -208,12 +208,14 @@ Bütün kelimeleri heceler.
     #=> ["ka-ra", "dağ-lar", "kar", "al-tın-da", "ka-lan-da"]
 ~~~
 
-#### to_bit
+#### to_bit(vow = 0, *uninvented)
 
-Bütün kelimelar için sesli harfleri 0, sessiz harfleri 1 yapar.
+Önce istisnaları temizler sonra
+bütün kelimeler için sesli harfleri vow, sessiz harfleri 1-vow yapar.
 
 ~~~ruby
-    dizi = %w(kara dağlar kar altında kalanda)
+    dizi = %w(kara dağ'lar kar altında kalanda)
+    print dizi.to_bit(0, "'")
     print dizi.to_bit
     #=> ["1010", "101101", "101", "0110110", "1010110"]
 ~~~
