@@ -57,12 +57,15 @@ exp ifadesini içermiyorsa gsuba girmediğinden işlemin daha hızlı çalışma
   "deneme".fast_gsub("e","i") #=> "dinimi"
 ~~~
 
-#### to_bit
+#### to_bit(vow = 1, *uninvented)
 
 Sesli harfleri 0, sessiz harfleri 1 yapar.
+Sesliler varsayılan olarak 0 dir ve istisna tutulacak
+karakterlerin girilmesi gerekilmektedir. İstisna tutulacak karakterler
+dizi şeklinde girilmelidir.
 
 ~~~ruby
-  "deneme".to_bit #=> "101010"
+  "de'n-e'me".to_bit(1, "'", "-")  #=> "101010"
 ~~~
 #### size?(size, comp_op = :==)
 
@@ -76,8 +79,22 @@ Verilen işleme göre size'ı kontrol eder. Doğruysa true döner.
   # işleçler string olarak da girilebilir
   "deneme"size?(2, ">") #=> true
   
-  # yanlış girile işleç sonucunda işlem nil üretir
+  # yanlış girilen işleç sonucunda işlem nil üretir
   "deneme".size?(5, "aboo") #=> nil
+~~~
+
+#### bit_size?(size, comp_op = :==)
+
+Verilen işleme göre size'ı kontrol eder. Doğruysa true döner.
+
+~~~ruby
+  "00-11-01".bit_size?(6) #=> true
+  
+  # comp yerine başka işleçlerde kullanılabilir
+  "00-10-100".bit_size?(3, :<) #=> false
+  
+  # işleçler string olarak da girilebilir
+  "00-10-100".bit_size?(2, ">") #=> true
 ~~~
 
 #### limit? (low_limit, up_limit)
@@ -292,6 +309,17 @@ Verilen ölçüt ve kontrol seçeneğine uyan elemanları seçer.
     print dizi.size? 2 #=> ["ya", "da", "bu"]
     print dizi.size?(5, :>)
     #=> ["olmamak", "mesele"]
+~~~
+
+#### bit_size? (size, comp_op = :==)
+
+Verilen ölçüt ve kontrol seçeneğine uyan elemanları seçer.
+
+~~~ruby
+    dizi = %w(001 110 45102 1200101 101201)
+    print dizi.size? 3 #=> ["001", "110"]
+    print dizi.size?(5, :>)
+    #=> ["1200101", "101201"]
 ~~~
 
 #### not_size? (size, comp_op = :==)
