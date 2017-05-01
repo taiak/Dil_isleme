@@ -34,7 +34,8 @@ module DS
     end
     # verilen ifadeleri yenisiyle değiştirir
     def gsub_all!(new, *old)
-      old.each { |exp| fast_gsub!(/#{exp}/, "#{new}") }
+      old.each { |exp| fast_gsub!(exp, "#{new}") }
+      return self
     end
     def gsub_all(new, *old)
       self.dup.gsub_all!(new, *old)
