@@ -118,6 +118,24 @@ aralarında "-" olan şekilde string türde döner.
   "deneme".spell  #=> "de-ne-me"
   "sergüzeşt".spell  #=> "ser-gü-zeşt"
 ~~~
+#### start_pattern?( pattern )
+
+Verilen stringin bit hali, verilen patterne eşitmi diye bakar.
+Pattern bit mi kontrolü veya dönüştürmesi yapmaz.
+
+~~~ruby
+  "deneme".start_pattern? "100" #=> false
+  "deneme".start_pattern? "10" #=> true
+~~~
+
+#### start_this_pattern?( str )
+
+Verilen stringin bite çevrilmiş haliyle mi başlıyor diye bakar
+
+~~~ruby
+  "bukalemun".start_this_pattern?("şukalem") #=> true
+  "bukalemun".start_this_pattern?("okalem") #=> false
+~~~
 
 ### Dizi Metotları
 
@@ -184,12 +202,23 @@ Heceleri(syllables) string olarak verir.
 #### start_pattern?(pattern)
 
 Kelimeleri bite çevirir ve verilen patternle başlayanları seçer.
+Bir dizi olarak geri döner.
 
 ~~~ruby
     dizi = %w(bu ikinci deneme cümlem)
     print dizi.start_pattern?("1010")
     #=> ["deneme"]
 ~~~
+
+#### start_this_pattern?(str)
+
+str'nin bit haliyle başlayan elemanları seçer. Ve bir dizi olarak geri döner.
+
+~~~ruby
+  dizi = %w(bu bir örnek cümledir)
+  print dizi.start_this_pattern?("ördek") #=>["ördek"]
+~~~
+
 #### index_pattern?(pattern)
 
 Kelimeleri bite çevirir ve verilen patterni içerisinde arar.
@@ -198,6 +227,28 @@ Kelimeleri bite çevirir ve verilen patterni içerisinde arar.
     dizi = %w(kara dağlar kar altında kalanda)
     print dizi.index_pattern?("1010")
     #=> ["kara", "kalanda"]
+~~~
+
+#### any_start?(*wordys)
+
+Verilen kelimelerle başlayan herhangi bir kelime var mı diye kontrol eder.
+Varsa true, yoksa false döner.
+
+~~~ruby
+  dizi = %w(If you're gonna be a square you ain't-a gonna go anywhere)
+  dizi.any_start? "go" #=> true
+  dizi.any_start? "ev" #=> false
+  dizi.any_start? "go", "ev" #=> true
+~~~
+
+#### any_end?(wordy)
+Verilen kelimyle biten herhangi bir kelime var mı diye kontrol eder.
+Varsa true, yoksa false döner.
+
+~~~ruby
+  dizi = %w(Like a flower bending in the breeze)
+  puts dizi.any_end? "wer" #=> true
+  puts dizi.any_end? "tex" #=> false
 ~~~
 
 #### spell
