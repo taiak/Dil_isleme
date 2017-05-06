@@ -15,6 +15,14 @@ module DS
       self.end_with?('mak', 'mek')
     end
     public
+    # verilen stringin bite çevrilmiş haliyle mi başlıyor?
+    def start_this_pattern?(str)
+      self.start_pattern?(str.to_bit)
+    end
+    # verilen patternle mi başlıyor
+    def start_pattern?(pattern)
+      self.to_bit.start_with?(pattern)
+    end
     # sesli mi diye bakar.
     def vowel?(n = 0)
       return false unless self[n] # nil veya false olma ihtimaline karşı
@@ -168,7 +176,19 @@ module DS
     end
     # verilen patternle başlayan kelimeleri döner
     def start_pattern?(pattern)
-      self.select { |word| word.to_bit.start_with?(pattern) }
+      self.select { |word| word.start_pattern?(pattern) }
+    end
+    # verilen pattern
+    def start_this_pattern?(str) 
+      self.select { |word| word.start_this_pattern?(str) }
+    end
+    # wordy ile başlayan kelime var mı diye bakar 
+    def any_start?(*wordys)
+      self.any? { |word| word.start_with?(*wordys)}
+    end
+    # wordy ile biten kelime var mı diye bakar
+    def any_end?( wordy )
+      self.any? { |wordy| word.end_with? wordy}
     end
     # verilen patterni kelimelerde arar ve geçerli kelimeleri döner
     def index_pattern?(pattern)
