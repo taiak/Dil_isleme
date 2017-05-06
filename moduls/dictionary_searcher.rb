@@ -131,11 +131,12 @@ module DS
     end
   end
   class ::Array
-    # verilen dizide clss sınıfına ait nesneleri seçer
-     def catch_class(clss)
-      self.select { |word| word.class == clss}
+    protected
+    # added for syll func
+    # [[symbole, number],[symbole, number]] şeklindeki diziden sembolleri seçer
+    def catch_class(clss)
+      self.flatten.class? clss
     end
-    # herbir elemanı sringe dönüştürür
     def to_str
       self.dup.to_str!
     end
