@@ -188,7 +188,7 @@ module DS
     end
     # wordy ile biten kelime var mı diye bakar
     def any_end?( wordy )
-      self.any? { |wordy| word.end_with? wordy}
+      self.any? { |word| word.end_with? wordy}
     end
     # verilen patterni kelimelerde arar ve geçerli kelimeleri döner
     def index_pattern?(pattern)
