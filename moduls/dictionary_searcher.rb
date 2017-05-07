@@ -2,7 +2,7 @@
 module DS
   class ::String
     private
-    VOWELS =  /[aâeıîioöuûüAÂEIİÎOÖUÜÛ]/.freeze
+    VOWELS =  /[aâeıîioöuüAÂEIİÎOÖUÜ]/.freeze
     CONSONANT = /[bcçdfgğhjklmnprsştvyzBCÇDEFGHJKLMNPRSŞTVYZ]/.freeze
     # VOWELS_STR = "aâeıîioöuûüAÂEIİÎOÖUÜÛ".freeze
     # CONSONANT_STR = "bcçdfgğhjklmnprsştvyzBCÇDEFGHJKLMNPRSŞTVYZ".freeze
@@ -104,30 +104,54 @@ module DS
     def limit? (low_limit, up_limit)
       self.size < up_limit and self.size > low_limit
     end
-    # türkçe kurallara göre hecelemeyi sağlar
-    def spell
-      heceli = self.downcase
-      sinir = self.size
+      def spell
+      syllabled = self.downcase
+      limit = self.size
       i = 1
-      while i < sinir
+      while i < limit
         if vowel?(-i)
           if vowel?(-(i+1))
-            heceli.insert(sinir-i, "-")
+            syllabled.insert(limit-i, "-")
           else
             i += 1
-            if (sinir-i > 2) || vowel?(-(i+1)) 
-              heceli.insert(sinir-i, "-")
+            if (limit-i > 2) || vowel?(-(i+1)) 
+              syllabled.insert(limit-i, "-")
             elsif vowel? # ilk harf sesliyse
-              heceli.insert(2, "-") 
+              syllabled.insert(2, "-") 
             end
           end
         end
         i += 1
       end
-      return heceli
+      return syllabled
     end
     def spell!
       self.replace( self.spell )
+    end
+    # bit için heceleme sağlar. sessiz harfler kontrol edilmez
+    def bit_spell(vowel = '0')
+      syllabled = self.downcase
+      limit = self.size
+      i = 1
+      while i < limit
+        if self[-i] == vowel
+          if self[-(i+1)] == vowel
+            syllabled.insert(limit-i, "-")
+          else
+            i += 1
+            if (limit-i > 2) || self[-(i+1)] == vowel 
+              syllabled.insert(limit-i, "-")
+            elsif self[0] == vowel # ilk harf sesliyse
+              syllabled.insert(2, "-") 
+            end
+          end
+        end
+        i += 1
+      end
+      return syllabled
+    end
+    def bit_spell!(vowel = '0')
+      self.replace(self.bit_spell(vowel))
     end
   end
   class ::Array
@@ -199,6 +223,13 @@ module DS
     end
     def spell!
       self.collect! { |word| word.spell }
+    end
+    # verilen dizinin elemanlarını bit bazında türkçe heceler
+    def bit_spell
+      self.dup.bit_spell!
+    end
+    def bit_spell!
+      self.collect! { |word| word.bit_spell! }
     end
     # kelimeleri bit şeklinde 0 ve 1'e çevirir
     def to_bit(vow = 0)
