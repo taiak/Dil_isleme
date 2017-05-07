@@ -118,6 +118,18 @@ aralarında "-" olan şekilde string türde döner.
   "deneme".spell  #=> "de-ne-me"
   "sergüzeşt".spell  #=> "ser-gü-zeşt"
 ~~~
+
+#### bit_spell(vowel = '0')
+
+Verilen vowel'i sesli, geri kalan karakterleri sessiz kabul ederek 
+türkçe dili kurallarına göre heceleme yapmayı sağlar.
+
+~~~ruby
+  "babalık".to_bit.bit_spell #=> "10-10-101"
+  "1010101".bit_spell #=> "10-10-101"
+  "10-10-101".bit_spell #=> "10--10--101"
+~~~
+
 #### start_pattern?( pattern )
 
 Verilen stringin bit hali, verilen patterne eşitmi diye bakar.
@@ -257,8 +269,20 @@ Bütün kelimeleri heceler.
 
 ~~~ruby
     dizi = %w(kara dağlar kar altında kalanda)
-    print dizi.spell
+    p dizi.spell
     #=> ["ka-ra", "dağ-lar", "kar", "al-tın-da", "ka-lan-da"]
+~~~
+
+#### bit_spell(vowel)
+
+Verilen dizinin elemanlarını bit bazında türkçe heceler
+
+~~~ruby
+    arr = %w(El alem al giymiş ben karalıyım)
+    p arr.to_bit! 
+    #=> ["01", "0101", "01", "101101", "101", "101010101"]
+    p arr.bit_spell
+    #=> ["01", "0-101", "01", "101-101", "101", "10-10-10-101"]
 ~~~
 
 #### to_bit(vow = 0)
