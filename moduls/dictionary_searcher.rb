@@ -1,5 +1,6 @@
 # Dictionary Searcher
 module DS
+  Version = 1.3.freeze
   class ::String
     private
     VOWELS =  /[aâeıîioöuüAÂEIİÎOÖUÜ]/.freeze
@@ -63,20 +64,20 @@ module DS
     def size?(size, comp_op = :==)
       # string olarak girilmiş değerleri sembole çevirir
       comp_op = comp_op.to_sym if comp_op.class == String
-      stat = nil # karşılaştırma koşullarına uymama durumu
       case comp_op
       when :==
-        stat = (self.size == size)
+        self.size == size
       when :>
-        stat = (self.size > size)
+        self.size > size
       when :<
-        stat = (self.size < size)
+        self.size < size
       when :>=
-        stat = (self.size >= size)
+        self.size >= size
       when :<=
-        stat = (self.size <= size)
+        self.size <= size
+      else
+        nil # karşılaştırma koşullarına uymama durumu
       end
-      return stat
     end
     # verilen stringdeki bit koşullarına uyan elemanları (0 ve 1)
     # comp_op a göre karşılaştırır. varsayılan `==` 'dir
@@ -85,20 +86,20 @@ module DS
       comp_op = comp_op.to_sym if comp_op.class == String
       # toplam bit içeriğini bul
       bit_count = self.count('0') + self.count('1')
-      stat = nil # karşılaştırma koşullarına uymama durumu
       case comp_op
       when :==
-        stat = (bit_count == size)
+        bit_count == size
       when :>
-        stat = (bit_count > size)
+        bit_count > size
       when :<
-        stat = (bit_count < size)
+        bit_count < size
       when :>=
-        stat = (bit_count >= size)
+        bit_count >= size
       when :<=
-        stat = (bit_count <= size)
+        bit_count <= size
+      else
+        nil # karşılaştırma koşullarına uymama durumu
       end
-      return stat
     end
     # string boyutlarına göre true veya false döner
     def limit? (low_limit, up_limit)
@@ -153,6 +154,31 @@ module DS
     def bit_spell!(vowel = '0')
       self.replace(self.bit_spell(vowel))
     end
+    def str_count?(str, num, comp_op = :>=)
+      comp_op = op.to_sym if comp_op.class == String
+      case comp_op
+      when :==
+        self.count(str) == num
+      when :>
+        self.count(str) > num
+      when :<
+        self.count(str) < num
+      when :>=
+        self.count(str) >= num
+      when :<=
+        self.count(str) <= num
+      else
+        nil
+      end
+    end
+    #self.inject(Hash.new(0)) { |hsh,val| hsh[val] += 1; hsh }
+    def each_count?(str)
+      str.freq.collect { |k, v| self.str_count?(k, v) }.all?
+    end
+    # give hash of letter frequency
+    def freq
+      self.split('').freq
+    end
   end
   class ::Array
     protected
@@ -161,11 +187,28 @@ module DS
     def catch_class(clss)
       self.flatten.class? clss
     end
+    public
     def to_str
       self.dup.to_str!
     end
+    # verilen elemanları stringe çevirir
+    # FIXME: false değeri için "false üretiyor"
     def to_str!
       self.collect! { |word| word.to_s }
+    end
+    # içinde num sayısı kadar str olan elemanları seçer
+    def search_rep?(str, num)
+      self.select{ |word| word.str_count?(str, num) }
+    end
+    # frequency of elements. Return hash
+    def freq
+       self.inject(Hash.new(0)) { |hsh,val| hsh[val] += 1; hsh }
+    end
+    # verilen stringin içeriği olan elemanları seçer
+    # stringin içideki elemanları içeren elemanları döner
+    # elemanlar sıralı olmak zorunda değildir
+    def search_chars?(str)
+      self.select { |word| word.each_count?(str) }
     end
     # gsub işlemini diziye uyarla
     def gsub!(before, after)
@@ -189,9 +232,9 @@ module DS
     def syll_count
       self.spell_split.rep_count
     end
-    # verilen dizideki elemanları sayar ve [adı, sayısı] şeklinde uniq bir liste verir
+    # verilen dizideki elemanları sayar ve [adı, sayısı] şeklinde uniq bir liste verir. dizi döner
     def rep_count
-      self.each_with_object(Hash.new(0)){ |key,hash| hash[key] += 1 }.sort {|sym, rep| rep[1].to_i <=> sym[1].to_i }
+      self.each_with_object(Hash.new(0)){ |key,hsh| hsh[key] += 1 }.sort {|sym, rep| rep[1].to_i <=> sym[1].to_i }
     end
     # heceleri(syllables) verir. sembol olarak dönüş yapar
     def syll
