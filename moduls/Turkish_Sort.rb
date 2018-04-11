@@ -1,16 +1,16 @@
-# türkçe kelimelerin sıralanması için düzenlenecek
-# 250 kelimeden fazlası için hata veriyor
-# hash benzeri bir yapıyla kullanılabilir
-# FIXME: optimize bir çözüm bulunacak!
+# turkce kelimelerin siralanmasi icin duzenlenecek
+# 250 kelimeden fazlasi icin hata veriyor
+# hash benzeri bir yapiyla kullanilabilir
+# FIXME: optimize bir cozum bulunacak!
 
 module SortTurkish
   class ::Array
     attr_reader :CHARS
-    CHARS = "0123456789AaÂâBbCcÇçDdEeFfGgĞğHhIıÎîİiJjK
-            kLlMmNnOoÖöPpQqRrSsŞşTtUuÛûÜüVvWwYyZz".freeze
-    ASCII_CHARS = "0123456789AÂBCÇDEFGĞHIÎİJKLMNOÖPQRSŞTUÛÜVWYZ
-            aâbcçdefgğhıîijklmnoöpqrsştuûüvwyz".freeze
-    def sırala
+    CHARS = "0123456789AaÂâBbCcCcDdEeFfGgGgHhIiÎîIiJjK
+            kLlMmNnOoOoPpQqRrSsSsTtUuÛûUuVvWwYyZz".freeze
+    ASCII_CHARS = "0123456789AÂBCCDEFGGHIÎIJKLMNOOPQRSSTUÛUVWYZ
+            aâbccdefgghiîijklmnoopqrsstuûuvwyz".freeze
+    def sirala
       sort_by do |item|
         if item.is_a?(String)
           item.chars.map { |ch| CHARS.index(ch) }
@@ -19,8 +19,9 @@ module SortTurkish
         end
       end
     end
-    def sırala!
-      replace(sırala)
+
+    def sirala!
+      replace(sirala)
     end
   end
 end
